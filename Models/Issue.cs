@@ -32,7 +32,7 @@ namespace TWSA.Models
         public string Status { get; set; } = "Pending";
 
         [StringLength(255)]
-        public string MediaAttachment { get; set; }
+        public string MediaAttachment { get; set; } = "No attachment";
 
         [Required]
         public int UserId { get; set; }

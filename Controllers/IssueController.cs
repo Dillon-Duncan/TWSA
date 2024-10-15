@@ -3,8 +3,11 @@ using TWSA.Data;
 using TWSA.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.IO;
+using System.Linq;
 
 namespace TWSA.Controllers
 {
@@ -32,12 +35,16 @@ namespace TWSA.Controllers
 
         // Handles the issue reporting form submission
         [HttpPost]
-        public async Task<IActionResult> ReportIssue(Issue issue)
+        public async Task<IActionResult> ReportIssue(Issue issue, IFormFile mediaAttachment)
         {
             if (HttpContext.Session.GetString("LoggedInUser") == null)
             {
                 return RedirectToAction("Login", "Account");
             }
+
+            // Remove User and UserId from ModelState as they will be set manually
+            ModelState.Remove("User");
+            ModelState.Remove("UserId");
 
             if (ModelState.IsValid)
             {
@@ -51,19 +58,40 @@ namespace TWSA.Controllers
                         return RedirectToAction("Login", "Account");
                     }
                     issue.UserId = user.UserId;
+
+                    if (mediaAttachment != null && mediaAttachment.Length > 0)
+                    {
+                        var fileName = Path.GetFileName(mediaAttachment.FileName);
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
+                        Directory.CreateDirectory(Path.GetDirectoryName(filePath)); // Ensure the directory exists
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await mediaAttachment.CopyToAsync(stream);
+                        }
+                        issue.MediaAttachment = "/uploads/" + fileName;
+                    }
+                    else
+                    {
+                        issue.MediaAttachment = "No attachment";
+                    }
+
                     _context.Issues.Add(issue);
                     await _context.SaveChangesAsync();
                     TempData["SuccessMessage"] = "Issue reported successfully!";
-                    return RedirectToAction("ViewReports");
+                    return RedirectToAction("ReportSuccess");
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "An error occurred while reporting an issue.");
                     ModelState.AddModelError("", "An error occurred while reporting the issue. Please try again.");
-                    return View(issue);
                 }
             }
             return View(issue);
+        }
+
+        public IActionResult ReportSuccess()
+        {
+            return View();
         }
 
         // Displays a list of reported issues
@@ -82,6 +110,7 @@ namespace TWSA.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while retrieving reports.");
                 TempData["ErrorMessage"] = "An error occurred while retrieving reports. Please try again.";
                 return RedirectToAction("Index", "Home");
             }
@@ -106,6 +135,7 @@ namespace TWSA.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while retrieving issue details.");
                 TempData["ErrorMessage"] = "An error occurred while retrieving issue details. Please try again.";
                 return RedirectToAction("ViewReports");
             }
