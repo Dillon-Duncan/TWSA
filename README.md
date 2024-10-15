@@ -1,6 +1,6 @@
 # TWSA - Two-Way South Africa
 
-Welcome to TWSA (Two-Way South Africa), an innovative C# .NET Framework application designed to streamline municipal services in South Africa. The platform provides an efficient and user-friendly interface for citizens to access and request municipal services, report issues, and stay informed about local events and announcements.
+Welcome to TWSA (Two-Way South Africa), a C# .NET application designed to streamline municipal services in South Africa. The platform provides an efficient and user-friendly interface for citizens to access and request municipal services, report issues, and stay informed about local events and announcements.
 
 ## Table of Contents
 
@@ -19,7 +19,7 @@ Welcome to TWSA (Two-Way South Africa), an innovative C# .NET Framework applicat
 
 ## Overview
 
-TWSA aims to bridge the gap between community members and local authorities by offering a comprehensive platform for civic engagement. The application empowers residents to actively participate in community improvement while providing municipal administrators with efficient tools to manage and respond to citizen needs.
+TWSA aims to bridge the gap between community members and local authorities by offering a comprehensive platform for engagement. The application empowers residents to actively participate in community improvement while providing municipal administrators with efficient tools to manage and respond to citizen needs.
 
 ## Key Features
 
@@ -71,9 +71,7 @@ TWSA aims to bridge the gap between community members and local authorities by o
    ```
    dotnet run
    ```
-
-6. Open your browser and navigate to `https://localhost:5001` to access the application.
-
+   
 ## Usage
 
 ### For Citizens
@@ -118,7 +116,6 @@ TWSA features a responsive and user-friendly interface, including:
 ## Additional Features
 
 - Consistent color scheme and layout for enhanced user experience
-- Clear labeling and instructions for intuitive navigation
 - Responsive design for seamless use across devices
 
 ## License
