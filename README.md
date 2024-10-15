@@ -48,7 +48,7 @@ TWSA aims to bridge the gap between community members and local authorities by o
 
 1. Clone the repository:
    ```
-   git clone https://github.com/YourOrganization/TWSA.git
+   git clone https://github.com/Dillon-Duncan/TWSA.git
    cd TWSA
    ```
 
