@@ -103,10 +103,9 @@ The application utilizes efficient data structures to manage information:
 TWSA features a responsive and user-friendly interface, including:
 
 - Login and Registration pages
-- Main Menu with role-specific navigation
+- Main Menu with navigation
 - Issue Reporting form with dynamic progress feedback
-- Event and Announcement browsing with advanced search functionality
-- Direct Messaging interface
+- Event and Announcement browsing.
 - Account Management settings
 
 ## Technical Implementation
