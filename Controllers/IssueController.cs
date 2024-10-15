@@ -78,7 +78,7 @@ namespace TWSA.Controllers
                     _context.Issues.Add(issue);
                     await _context.SaveChangesAsync();
                     TempData["SuccessMessage"] = "Issue reported successfully!";
-                    return RedirectToAction("ReportSuccess");
+                    return RedirectToAction(nameof(ReportSuccess));
                 }
                 catch (Exception ex)
                 {
