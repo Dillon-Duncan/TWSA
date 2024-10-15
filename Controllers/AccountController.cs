@@ -5,16 +5,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace TWSA.Controllers
 {
     public class AccountController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(ApplicationDbContext context)
+        public AccountController(ApplicationDbContext context, ILogger<AccountController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -52,6 +55,7 @@ namespace TWSA.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred during login.");
                 ModelState.AddModelError("", "An error occurred while processing your request. Please try again.");
                 return View();
             }
@@ -68,8 +72,10 @@ namespace TWSA.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(User user)
         {
+            _logger.LogInformation("Register action called");
             if (ModelState.IsValid)
             {
                 try
@@ -82,6 +88,7 @@ namespace TWSA.Controllers
                     }
 
                     user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+                    user.IsAdmin = false; // Set IsAdmin to false by default
                     _context.Users.Add(user);
                     await _context.SaveChangesAsync();
                     HttpContext.Session.SetString("LoggedInUser", user.Username);
@@ -91,10 +98,15 @@ namespace TWSA.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex, "An error occurred during registration.");
                     ModelState.AddModelError("", "An error occurred while processing your request. Please try again.");
-                    return View(user);
                 }
             }
+            else
+            {
+                _logger.LogWarning("Model state is invalid: {errors}", string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+            }
+            // If we got this far, something failed, redisplay form
             return View(user);
         }
 

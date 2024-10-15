@@ -31,6 +31,10 @@ namespace TWSA.Data
                 .WithOne(i => i.User)
                 .HasForeignKey(i => i.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<EventAnnouncement>()
+                .Property(e => e.IsEvent)
+                .HasDefaultValue(true);
         }
     }
 }

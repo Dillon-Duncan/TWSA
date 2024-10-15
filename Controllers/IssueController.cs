@@ -4,16 +4,19 @@ using TWSA.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace TWSA.Controllers
 {
     public class IssueController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<IssueController> _logger;
 
-        public IssueController(ApplicationDbContext context)
+        public IssueController(ApplicationDbContext context, ILogger<IssueController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Displays the form to report an issue
@@ -41,7 +44,8 @@ namespace TWSA.Controllers
                 try
                 {
                     issue.ReportDateTime = DateTime.Now;
-                    var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == HttpContext.Session.GetString("LoggedInUser"));
+                    var username = HttpContext.Session.GetString("LoggedInUser");
+                    var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
                     if (user == null)
                     {
                         return RedirectToAction("Login", "Account");
@@ -54,6 +58,7 @@ namespace TWSA.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex, "An error occurred while reporting an issue.");
                     ModelState.AddModelError("", "An error occurred while reporting the issue. Please try again.");
                     return View(issue);
                 }

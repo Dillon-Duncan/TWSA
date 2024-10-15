@@ -4,16 +4,19 @@ using TWSA.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace TWSA.Controllers
 {
     public class EventController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<EventController> _logger;
 
-        public EventController(ApplicationDbContext context)
+        public EventController(ApplicationDbContext context, ILogger<EventController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Displays a list of local events
@@ -27,6 +30,7 @@ namespace TWSA.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while retrieving events.");
                 TempData["ErrorMessage"] = "An error occurred while retrieving events. Please try again.";
                 return RedirectToAction("Index", "Home");
             }

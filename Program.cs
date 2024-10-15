@@ -14,6 +14,12 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+builder.Services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddConfiguration(builder.Configuration.GetSection("Logging"));
+    loggingBuilder.AddConsole();
+    loggingBuilder.AddDebug();
+});
 
 var app = builder.Build();
 

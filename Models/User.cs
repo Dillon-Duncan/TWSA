@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace TWSA.Models
 {
@@ -44,7 +45,6 @@ namespace TWSA.Models
         public bool IsAdmin { get; set; }
 
         // Navigation property
-        public virtual ICollection<Issue> Issues { get; set; }
+        public virtual ICollection<Issue> Issues { get; set; } = new List<Issue>();
     }
 }
-
