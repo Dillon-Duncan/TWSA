@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<section class="d-flex flex-column align-items-center justify-content-center" style="width: 60%; height: 100vh; background-color: #ffffff; padding: 20px;">
+    <div class="card shadow-sm" style="max-width: 700px; width: 100%; padding: 32px; height: 100% ; max-height: 500px ">
+        <h2 class="text-center text-success mb-4">Sign In</h2>
+
+        @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+        {
+            <div class="alert alert-danger text-center" role="alert">
+                @ViewData["ErrorMessage"]
+            </div>
+        }
+
+        <form method="post" action="/Account/Login">
+            <div class="form-group mb-4">
+                <label for="username" class="font-weight-bold">Username or Email</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username or email" required />
+            </div>
+            <div class="form-group mb-4">
+                <label for="password" class="font-weight-bold">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            <p class="text-center mt-4">
+                Don't have an account?
+                <a href="/Account/Register" class="text-success font-weight-bold">Register</a>
+            </p>
+        </form>
+    </div>
+</section>

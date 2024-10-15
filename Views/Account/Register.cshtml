@@ -1,0 +1,45 @@
+@{
+    ViewData["Title"] = "Register";
+}
+
+<section class="d-flex flex-column align-items-center justify-content-center" style="width: 60%; height: 100vh; background-color: #ffffff; padding: 20px;">
+    <div class="card shadow-sm" style="max-width: 700px; width: 100%; padding: 32px; height: 100% ; max-height: 500px ">
+        <h2 class="text-center text-success mb-4">Register</h2>
+
+        <form method="post" action="/Account/Register">
+            <div class="form-group mb-4">
+                <label for="username" class="font-weight-bold">Username</label>
+                <input type="text" id="username" name="Username" class="form-control" required />
+            </div>
+            <div class="form-group mb-4">
+                <label for="password" class="font-weight-bold">Password</label>
+                <input type="password" id="password" name="Password" class="form-control" required />
+            </div>
+            <div class="form-row mb-4">
+                <div class="col">
+                    <label for="firstName" class="font-weight-bold">First Name</label>
+                    <input type="text" id="firstName" name="FirstName" class="form-control" required />
+                </div>
+                <div class="col">
+                    <label for="surname" class="font-weight-bold">Surname</label>
+                    <input type="text" id="surname" name="Surname" class="form-control" required />
+                </div>
+                <div class="col">
+                    <label for="age" class="font-weight-bold">Age</label>
+                    <input type="number" id="age" name="Age" class="form-control" required />
+                </div>
+            </div>
+            <div class="form-row mb-4">
+                <div class="col">
+                    <label for="city" class="font-weight-bold">City</label>
+                    <input type="text" id="city" name="City" class="form-control" required />
+                </div>
+                <div class="col">
+                    <label for="email" class="font-weight-bold">Email</label>
+                    <input type="email" id="email" name="Email" class="form-control" required />
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </form>
+    </div>
+</section>

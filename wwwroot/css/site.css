@@ -1,0 +1,53 @@
+/* wwwroot/css/site.css */
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.full-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.footer {
+    text-align: center;
+    padding: 1rem 0;
+    background-color: #f8f9fa;
+}
+
+.dashboard-block {
+    transition: transform 0.2s;
+}
+
+.dashboard-block:hover {
+    transform: scale(1.05);
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.8);
+}
+
+.btn-primary {
+    background-color: #10b981;
+    border-color: #10b981;
+}
+
+.btn-primary:hover {
+    background-color: #059669;
+    border-color: #059669;
+}

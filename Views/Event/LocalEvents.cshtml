@@ -1,0 +1,33 @@
+@model IEnumerable<TWSA.Models.EventAnnouncement>
+
+@{
+    ViewData["Title"] = "Local Events";
+}
+
+<section class="d-flex flex-column align-items-center justify-content-center" style="width: 60%; min-height: 100vh; background-color: #ffffff; padding: 20px;">
+    <div class="card shadow-sm" style="max-width: 700px; width: 100%; padding: 32px; height: 100% ; max-height: 500px ">
+        <h2 class="text-center text-success mb-4">Local Events</h2>
+
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+            @foreach (var eventAnnouncement in Model)
+            {
+                <div class="card p-4 shadow-sm" style="flex: 1 1 calc(33.333% - 20px); max-width: 350px;">
+                    <h3 class="text-dark">@eventAnnouncement.Subject</h3>
+                    <p><strong>Location:</strong> @eventAnnouncement.Location</p>
+                    <p><strong>Category:</strong> @eventAnnouncement.Category</p>
+                    <p><strong>Date:</strong> @eventAnnouncement.EventDateTime.ToString("dddd, MMMM d, yyyy")</p>
+                    <p>@eventAnnouncement.Description</p>
+
+                    @if (!string.IsNullOrEmpty(eventAnnouncement.MediaAttachment))
+                    {
+                        <img src="@eventAnnouncement.MediaAttachment" alt="@eventAnnouncement.Subject" class="img-fluid rounded mt-3">
+                    }
+
+                    <div class="mt-3">
+                        <a href="/Events/Details/@eventAnnouncement.EventId" class="btn btn-primary">More Info</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
