@@ -6,28 +6,30 @@
 
 <h2 class="text-center text-success mb-4">Local Events</h2>
 
-<div class="row">
-    @foreach (var eventAnnouncement in Model)
-    {
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h3 class="card-title text-success">@eventAnnouncement.Subject</h3>
-                    <p class="card-text"><strong>Location:</strong> @eventAnnouncement.Location</p>
-                    <p class="card-text"><strong>Category:</strong> @eventAnnouncement.Category</p>
-                    <p class="card-text"><strong>Date:</strong> @eventAnnouncement.EventDateTime.ToString("dddd, MMMM d, yyyy")</p>
-                    <p class="card-text">@eventAnnouncement.Description</p>
+<div class="scrollable-content">
+    <div class="row">
+        @foreach (var eventAnnouncement in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title text-success">@eventAnnouncement.Subject</h3>
+                        <p class="card-text"><strong>Location:</strong> @eventAnnouncement.Location</p>
+                        <p class="card-text"><strong>Category:</strong> @eventAnnouncement.Category</p>
+                        <p class="card-text"><strong>Date:</strong> @eventAnnouncement.EventDateTime.ToString("dddd, MMMM d, yyyy")</p>
+                        <p class="card-text">@eventAnnouncement.Description</p>
 
-                    @if (!string.IsNullOrEmpty(eventAnnouncement.MediaAttachment))
-                    {
-                        <img src="@eventAnnouncement.MediaAttachment" alt="@eventAnnouncement.Subject" class="img-fluid rounded mt-3">
-                    }
+                        @if (!string.IsNullOrEmpty(eventAnnouncement.MediaAttachment))
+                        {
+                            <img src="@eventAnnouncement.MediaAttachment" alt="@eventAnnouncement.Subject" class="img-fluid rounded mt-3">
+                        }
 
-                    <div class="mt-3">
-                        <a href="/Events/Details/@eventAnnouncement.EventId" class="btn btn-primary">More Info</a>
+                        <div class="mt-3">
+                            <a href="/Events/Details/@eventAnnouncement.EventId" class="btn btn-primary">More Info</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>

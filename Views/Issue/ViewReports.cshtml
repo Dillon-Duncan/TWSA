@@ -6,34 +6,36 @@
 
 <h2 class="text-center text-success mb-4">Reported Issues</h2>
 
-<div class="table-responsive">
-    <table class="table table-striped table-hover">
-        <thead class="thead-dark">
-            <tr>
-                <th>Subject</th>
-                <th>Location</th>
-                <th>Category</th>
-                <th>Reported By</th>
-                <th>Report Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var issue in Model)
-            {
+<div class="scrollable-content">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@issue.Subject</td>
-                    <td>@issue.Location</td>
-                    <td>@issue.Category</td>
-                    <td>@issue.UserId</td>
-                    <td>@issue.ReportDateTime.ToString("yyyy-MM-dd HH:mm")</td>
-                    <td>@issue.Status</td>
-                    <td>
-                        <a href="/Issue/Details/@issue.IssueId" class="btn btn-sm btn-primary">Details</a>
-                    </td>
+                    <th>Subject</th>
+                    <th>Location</th>
+                    <th>Category</th>
+                    <th>Reported By</th>
+                    <th>Report Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var issue in Model)
+                {
+                    <tr>
+                        <td>@issue.Subject</td>
+                        <td>@issue.Location</td>
+                        <td>@issue.Category</td>
+                        <td>@issue.UserId</td>
+                        <td>@issue.ReportDateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@issue.Status</td>
+                        <td>
+                            <a href="/Issue/Details/@issue.IssueId" class="btn btn-sm btn-primary">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

@@ -47,55 +47,55 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/Home/Index">TWSA</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mr-auto">
-                    @if (Context.Session.GetString("LoggedInUser") != null)
+    <div class="container">
+        <a class="navbar-brand" href="/Home/Index">TWSA</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                @if (Context.Session.GetString("LoggedInUser") != null)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Event/LocalEvents">Local Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Issue/ReportIssue">Report Issue</a>
+                    </li>
+                    @if (Context.Session.GetString("IsAdmin") == "True")
                     {
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Event/LocalEvents">Local Events</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Issue/ReportIssue">Report Issue</a>
-                        </li>
-                        @if (Context.Session.GetString("IsAdmin") == "True")
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Admin
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="adminDropdown">
-                                    <a class="dropdown-item" href="/Issue/ViewReports">View Reports</a>
-                                    <a class="dropdown-item" href="/Event/PostEvent">Post Event</a>
-                                </div>
-                            </li>
-                        }
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Account/ManageAccount">Manage Account</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Admin
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="adminDropdown">
+                                <a class="dropdown-item" href="/Issue/ViewReports">View Reports</a>
+                                <a class="dropdown-item" href="/Event/PostEvent">Post Event</a>
+                            </div>
                         </li>
                     }
-                </ul>
-                <ul class="navbar-nav">
-                    @if (Context.Session.GetString("LoggedInUser") != null)
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Account/Logout">Logout</a>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Account/Login">Login</a>
-                        </li>
-                    }
-                </ul>
-            </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Account/ManageAccount">Manage Account</a>
+                    </li>
+                }
+            </ul>
+            <ul class="navbar-nav">
+                @if (Context.Session.GetString("LoggedInUser") != null)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Account/Logout">Logout</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Account/Login">Login</a>
+                    </li>
+                }
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <main class="main-content">
         <div class="container">
@@ -109,9 +109,9 @@
         </div>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
