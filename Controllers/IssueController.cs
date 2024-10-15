@@ -3,6 +3,7 @@ using TWSA.Data;
 using TWSA.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace TWSA.Controllers
 {
@@ -37,12 +38,25 @@ namespace TWSA.Controllers
 
             if (ModelState.IsValid)
             {
-                issue.ReportDateTime = DateTime.Now;
-                issue.UserId = (await _context.Users.FirstOrDefaultAsync(u => u.Username == HttpContext.Session.GetString("LoggedInUser"))).UserId;
-                _context.Issues.Add(issue);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Issue reported successfully!";
-                return RedirectToAction("ViewReports");
+                try
+                {
+                    issue.ReportDateTime = DateTime.Now;
+                    var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == HttpContext.Session.GetString("LoggedInUser"));
+                    if (user == null)
+                    {
+                        return RedirectToAction("Login", "Account");
+                    }
+                    issue.UserId = user.UserId;
+                    _context.Issues.Add(issue);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Issue reported successfully!";
+                    return RedirectToAction("ViewReports");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An error occurred while reporting the issue. Please try again.");
+                    return View(issue);
+                }
             }
             return View(issue);
         }
@@ -56,8 +70,40 @@ namespace TWSA.Controllers
                 return RedirectToAction("AccessDenied", "Home");
             }
 
-            var issues = await _context.Issues.Include(i => i.UserId).ToListAsync();
-            return View(issues);
+            try
+            {
+                var issues = await _context.Issues.Include(i => i.User).ToListAsync();
+                return View(issues);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while retrieving reports. Please try again.";
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            if (HttpContext.Session.GetString("IsAdmin") != "True")
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
+
+            try
+            {
+                var issue = await _context.Issues.Include(i => i.User).FirstOrDefaultAsync(i => i.IssueId == id);
+                if (issue == null)
+                {
+                    return NotFound();
+                }
+                return View(issue);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while retrieving issue details. Please try again.";
+                return RedirectToAction("ViewReports");
+            }
         }
     }
 }
