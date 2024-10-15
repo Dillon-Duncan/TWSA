@@ -4,74 +4,82 @@
     ViewData["Title"] = "Post Event";
 }
 
-<section class="d-flex flex-column align-items-center justify-content-center" style="width: 60%; height: 100vh; background-color: #ffffff; padding: 20px;">
-    <div class="card shadow-sm" style="max-width: 700px; width: 100%; padding: 32px; height: 100% ; max-height: 500px ">
-        <h2 class="text-center text-success mb-4">Post Event</h2>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center text-success mb-4">Post Event</h2>
 
-        <form id="postEventForm" method="post" action="/Event/PostEvent" enctype="multipart/form-data" style="margin: 0 auto;">
-            <div class="form-row mb-4">
-                <div class="col">
-                    <label for="eventName" class="font-weight-bold">Event Name</label>
-                    <input type="text" id="eventName" name="EventName" class="form-control" required />
-                </div>
-                <div class="col">
-                    <label for="eventDate" class="font-weight-bold">Event Date</label>
-                    <input type="date" id="eventDate" name="EventDate" class="form-control" required />
-                </div>
-            </div>
-            <div class="form-row mb-4">
-                <div class="col">
-                    <label for="eventLocation" class="font-weight-bold">Event Location</label>
-                    <input type="text" id="eventLocation" name="EventLocation" class="form-control" required />
-                </div>
-                <div class="col">
-                    <label for="mediaAttachment" class="font-weight-bold">Media Attachment</label>
-                    <input type="file" id="mediaAttachment" name="MediaAttachment" class="form-control" />
-                </div>
-            </div>
-            <div class="form-group mb-4">
-                <label for="eventDescription" class="font-weight-bold">Event Description</label>
-                <textarea id="eventDescription" name="EventDescription" class="form-control" rows="4" required></textarea>
-            </div>
-            <div class="form-group form-check mb-4">
-                <input type="checkbox" id="isEvent" name="IsEvent" class="form-check-input" />
-                <label for="isEvent" class="form-check-label font-weight-bold">Is Event?</label>
-            </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary btn-block">Submit</button>
-            </div>
-        </form>
+                <form id="postEventForm" method="post" action="/Event/PostEvent" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="Subject">Event Name</label>
+                            <input type="text" id="Subject" name="Subject" class="form-control" required />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="EventDateTime">Event Date</label>
+                            <input type="datetime-local" id="EventDateTime" name="EventDateTime" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="Location">Event Location</label>
+                            <input type="text" id="Location" name="Location" class="form-control" required />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="Category">Category</label>
+                            <input type="text" id="Category" name="Category" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Description">Event Description</label>
+                        <textarea id="Description" name="Description" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="MediaAttachment">Media Attachment</label>
+                        <input type="file" id="MediaAttachment" name="MediaAttachment" class="form-control-file" />
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" id="IsEvent" name="IsEvent" class="form-check-input" />
+                        <label for="IsEvent" class="form-check-label">Is Event?</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                </form>
 
-        <div class="progress mt-4" style="height: 20px;">
-            <div id="progressBar" class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                <div class="progress mt-4" style="height: 20px;">
+                    <div id="progressBar" class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                </div>
+            </div>
         </div>
     </div>
-</section>
+</div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById('postEventForm');
-        const progressBar = document.getElementById('progressBar');
-        const fields = form.querySelectorAll('input, textarea, select');
-        const totalFields = fields.length;
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('postEventForm');
+            const progressBar = document.getElementById('progressBar');
+            const fields = form.querySelectorAll('input, textarea, select');
+            const totalFields = fields.length;
 
-        function updateProgress() {
-            let filledFields = 0;
+            function updateProgress() {
+                let filledFields = 0;
+                fields.forEach(field => {
+                    if (field.value.trim() !== '') {
+                        filledFields++;
+                    }
+                });
+                const progress = (filledFields / totalFields) * 100;
+                progressBar.style.width = progress + '%';
+                progressBar.setAttribute('aria-valuenow', progress);
+                progressBar.textContent = Math.round(progress) + '%';
+            }
+
             fields.forEach(field => {
-                if (field.value.trim() !== '') {
-                    filledFields++;
-                }
+                field.addEventListener('input', updateProgress);
             });
-            const progress = (filledFields / totalFields) * 100;
-            progressBar.style.width = progress + '%';
-            progressBar.setAttribute('aria-valuenow', progress);
-            progressBar.textContent = Math.round(progress) + '%';
-        }
 
-        fields.forEach(field => {
-            field.addEventListener('input', updateProgress);
+            updateProgress(); // Initial call to set progress bar on page load
         });
-
-        updateProgress(); // Initial call to set progress bar on page load
-    });
-</script>
+    </script>
+}

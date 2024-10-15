@@ -13,6 +13,7 @@ namespace TWSA.Models
         public string Category { get; set; }
         public string Description { get; set; }
         public string MediaAttachment { get; set; }
-        public DateTime ReportDateTime { get; set; }
+        public DateTime ReportDateTime { get; set; } = DateTime.Now;
+        public string Status { get; set; } = "Pending";
     }
 }

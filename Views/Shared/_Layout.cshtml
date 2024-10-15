@@ -7,75 +7,112 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
+        :root {
+            --twsa-green: #10b981;
+            --twsa-light-green: #d1fae5;
         }
-        .full-screen {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
         }
-        .main-content {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .navbar {
+            background-color: var(--twsa-green) !important;
         }
-        .navbar-brand {
-            color: #10b981; /* TWSA green */
+        .navbar-brand, .navbar-nav .nav-link {
+            color: white !important;
         }
         .navbar-nav .nav-item:hover .nav-link {
-            color: #10b981; /* TWSA green on hover */
+            color: var(--twsa-light-green) !important;
+        }
+        .btn-primary {
+            background-color: var(--twsa-green);
+            border-color: var(--twsa-green);
+        }
+        .btn-primary:hover {
+            background-color: #0e9f6e;
+            border-color: #0e9f6e;
+        }
+        .text-success {
+            color: var(--twsa-green) !important;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .main-content {
+            min-height: calc(100vh - 116px);
+            padding: 2rem 0;
         }
     </style>
 </head>
-<body class="full-screen">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/Home/Index">TWSA</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/Home/Index">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Issue/ReportIssue">Report Issue</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Issue/ViewReports">View Reports</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Account/Login">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Account/Register">Register</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Event/PostEvent">Post Event</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Event/LocalEvents">Local Events</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Account/ManageAccount">Manage Account</a>
-                </li>
-            </ul>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/Home/Index">TWSA</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    @if (Context.Session.GetString("LoggedInUser") != null)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Event/LocalEvents">Local Events</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Issue/ReportIssue">Report Issue</a>
+                        </li>
+                        @if (Context.Session.GetString("IsAdmin") == "True")
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <a class="dropdown-item" href="/Issue/ViewReports">View Reports</a>
+                                    <a class="dropdown-item" href="/Event/PostEvent">Post Event</a>
+                                </div>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Account/ManageAccount">Manage Account</a>
+                        </li>
+                    }
+                </ul>
+                <ul class="navbar-nav">
+                    @if (Context.Session.GetString("LoggedInUser") != null)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Account/Logout">Logout</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Account/Login">Login</a>
+                        </li>
+                    }
+                </ul>
+            </div>
         </div>
     </nav>
+
     <main class="main-content">
-        @RenderBody()
-    </main>
-    <footer class="footer mt-auto py-3 bg-light">
         <div class="container">
-            <span class="text-muted">ST10079970 TWSA</span>
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="footer bg-light py-3">
+        <div class="container text-center">
+            <span class="text-muted">ST10079970 TWSA &copy; @DateTime.Now.Year</span>
         </div>
     </footer>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

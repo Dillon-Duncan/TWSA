@@ -4,19 +4,19 @@
     ViewData["Title"] = "Local Events";
 }
 
-<section class="d-flex flex-column align-items-center justify-content-center" style="width: 60%; min-height: 100vh; background-color: #ffffff; padding: 20px;">
-    <div class="card shadow-sm" style="max-width: 700px; width: 100%; padding: 32px; height: 100% ; max-height: 500px ">
-        <h2 class="text-center text-success mb-4">Local Events</h2>
+<h2 class="text-center text-success mb-4">Local Events</h2>
 
-        <div class="d-flex flex-wrap gap-3 justify-content-center">
-            @foreach (var eventAnnouncement in Model)
-            {
-                <div class="card p-4 shadow-sm" style="flex: 1 1 calc(33.333% - 20px); max-width: 350px;">
-                    <h3 class="text-dark">@eventAnnouncement.Subject</h3>
-                    <p><strong>Location:</strong> @eventAnnouncement.Location</p>
-                    <p><strong>Category:</strong> @eventAnnouncement.Category</p>
-                    <p><strong>Date:</strong> @eventAnnouncement.EventDateTime.ToString("dddd, MMMM d, yyyy")</p>
-                    <p>@eventAnnouncement.Description</p>
+<div class="row">
+    @foreach (var eventAnnouncement in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title text-success">@eventAnnouncement.Subject</h3>
+                    <p class="card-text"><strong>Location:</strong> @eventAnnouncement.Location</p>
+                    <p class="card-text"><strong>Category:</strong> @eventAnnouncement.Category</p>
+                    <p class="card-text"><strong>Date:</strong> @eventAnnouncement.EventDateTime.ToString("dddd, MMMM d, yyyy")</p>
+                    <p class="card-text">@eventAnnouncement.Description</p>
 
                     @if (!string.IsNullOrEmpty(eventAnnouncement.MediaAttachment))
                     {
@@ -27,7 +27,7 @@
                         <a href="/Events/Details/@eventAnnouncement.EventId" class="btn btn-primary">More Info</a>
                     </div>
                 </div>
-            }
+            </div>
         </div>
-    </div>
-</section>
+    }
+</div>

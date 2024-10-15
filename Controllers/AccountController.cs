@@ -1,11 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 using TWSA.Data;
 using TWSA.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using BCrypt.Net;
 
 namespace TWSA.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public AccountController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         // Displays the login form
         [HttpGet]
         public IActionResult Login()
@@ -15,15 +25,17 @@ namespace TWSA.Controllers
 
         // Handles login form submission
         [HttpPost]
-        public IActionResult Login(string username, string password)
+        public async Task<IActionResult> Login(string username, string password)
         {
-            if (UserData.ValidateUser(username, password))
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
-                // Redirect to some protected page
-                return RedirectToAction("ManageAccount");
+                HttpContext.Session.SetString("LoggedInUser", username);
+                HttpContext.Session.SetString("IsAdmin", user.IsAdmin.ToString());
+                TempData["SuccessMessage"] = "Login successful!";
+                return RedirectToAction("Index", "Home");
             }
 
-            // Set error message if login fails
             ViewData["ErrorMessage"] = "Invalid username or password.";
             return View();
         }
@@ -37,43 +49,65 @@ namespace TWSA.Controllers
 
         // Handles registration form submission
         [HttpPost]
-        public IActionResult Register(User user)
+        public async Task<IActionResult> Register(User user)
         {
             if (ModelState.IsValid)
             {
-                UserData.AddUser(user);
-                return RedirectToAction("Login");
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                HttpContext.Session.SetString("LoggedInUser", user.Username);
+                HttpContext.Session.SetString("IsAdmin", user.IsAdmin.ToString());
+                TempData["SuccessMessage"] = "Registration successful!";
+                return RedirectToAction("Index", "Home");
             }
             return View(user);
         }
 
         // Displays the manage account form
         [HttpGet]
-        public IActionResult ManageAccount()
+        public async Task<IActionResult> ManageAccount()
         {
-            return View();
+            var username = HttpContext.Session.GetString("LoggedInUser");
+            if (username == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            return View(user);
         }
 
         // Handles manage account form submission
         [HttpPost]
-        public IActionResult ManageAccount(User user)
+        public async Task<IActionResult> ManageAccount(User user)
         {
             if (ModelState.IsValid)
             {
-                var existingUser = UserData.GetUser(user.Username);
-                if (existingUser != null)
+                var existingUser = await _context.Users.FindAsync(user.UserId);
+                if (existingUser == null)
                 {
-                    existingUser.FirstName = user.FirstName;
-                    existingUser.Surname = user.Surname;
-                    existingUser.Age = user.Age;
-                    existingUser.City = user.City;
-                    existingUser.Email = user.Email;
-                    existingUser.PhoneNumber = user.PhoneNumber;
-                    UserData.AddUser(existingUser); // Update user data
-                    return RedirectToAction("ManageAccount");
+                    return NotFound();
                 }
+
+                existingUser.FirstName = user.FirstName;
+                existingUser.Surname = user.Surname;
+                existingUser.Age = user.Age;
+                existingUser.City = user.City;
+                existingUser.Email = user.Email;
+                existingUser.PhoneNumber = user.PhoneNumber;
+
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Account updated successfully!";
+                return RedirectToAction("ManageAccount");
             }
             return View(user);
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login");
         }
     }
 }

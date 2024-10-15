@@ -1,30 +1,47 @@
 using Microsoft.AspNetCore.Mvc;
 using TWSA.Data;
 using TWSA.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace TWSA.Controllers
 {
     public class IssueController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public IssueController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         // Displays the form to report an issue
         [HttpGet]
         public IActionResult ReportIssue()
         {
+            if (HttpContext.Session.GetString("LoggedInUser") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View();
         }
 
         // Handles the issue reporting form submission
         [HttpPost]
-        public IActionResult ReportIssue(Issue issue)
+        public async Task<IActionResult> ReportIssue(Issue issue)
         {
+            if (HttpContext.Session.GetString("LoggedInUser") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             if (ModelState.IsValid)
             {
-                // Set the report date to the current time
                 issue.ReportDateTime = DateTime.Now;
-
-                // Logic to save the issue to a database can go here.
-                IssueData.AddIssue(issue, "johndoe"); // Replace "johndoe" with the logged-in user's username
-
+                issue.UserId = (await _context.Users.FirstOrDefaultAsync(u => u.Username == HttpContext.Session.GetString("LoggedInUser"))).UserId;
+                _context.Issues.Add(issue);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Issue reported successfully!";
                 return RedirectToAction("ViewReports");
             }
             return View(issue);
@@ -32,9 +49,14 @@ namespace TWSA.Controllers
 
         // Displays a list of reported issues
         [HttpGet]
-        public IActionResult ViewReports()
+        public async Task<IActionResult> ViewReports()
         {
-            var issues = IssueData.GetAllIssues();
+            if (HttpContext.Session.GetString("IsAdmin") != "True")
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
+
+            var issues = await _context.Issues.Include(i => i.UserId).ToListAsync();
             return View(issues);
         }
     }

@@ -1,5 +1,4 @@
-using Newtonsoft.Json;
-using TWSA.Helpers;
+using System.Collections.Generic;
 using TWSA.Models;
 
 namespace TWSA.Data
@@ -7,23 +6,10 @@ namespace TWSA.Data
     public static class IssueData
     {
         private static readonly List<Issue> issues = new List<Issue>();
-        private static readonly string filePath = "Data/issues.txt";
 
-        static IssueData()
+        public static void AddIssue(Issue issue)
         {
-            LoadData();
-            if (issues.Count == 0) // If no data, load default data
-            {
-                issues.AddRange(DefaultData.GetDefaultIssues());
-                SaveData();
-            }
-        }
-
-        public static void AddIssue(Issue issue, string username)
-        {
-            issue.UserId = UserData.GetUser(username).UserId;
             issues.Add(issue);
-            SaveData();
         }
 
         public static List<Issue> GetAllIssues()
@@ -31,24 +17,27 @@ namespace TWSA.Data
             return new List<Issue>(issues);
         }
 
-        private static void SaveData()
+        public static Issue GetIssue(int issueId)
         {
-            var jsonData = JsonConvert.SerializeObject(issues);
-            var encryptedData = EncryptionHelper.Encrypt(jsonData);
-            File.WriteAllText(filePath, encryptedData);
+            return issues.Find(i => i.IssueId == issueId);
         }
 
-        private static void LoadData()
+        public static void UpdateIssue(Issue issue)
         {
-            if (File.Exists(filePath))
+            var existingIssue = GetIssue(issue.IssueId);
+            if (existingIssue != null)
             {
-                var encryptedData = File.ReadAllText(filePath);
-                var jsonData = EncryptionHelper.Decrypt(encryptedData);
-                var loadedIssues = JsonConvert.DeserializeObject<List<Issue>>(jsonData);
-                if (loadedIssues != null)
-                {
-                    issues.AddRange(loadedIssues);
-                }
+                issues.Remove(existingIssue);
+                issues.Add(issue);
+            }
+        }
+
+        public static void DeleteIssue(int issueId)
+        {
+            var issue = GetIssue(issueId);
+            if (issue != null)
+            {
+                issues.Remove(issue);
             }
         }
     }
